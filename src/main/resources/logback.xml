@@ -20,7 +20,8 @@
         </encoder>
     </appender>
 
-    <logger name="ru.javawebinar.topjava" level="debug"/>
+    <logger name="ru.javawebinar.topjava" level="DEBUG"/>
+<!--    <logger name="org.springframework" level="DEBUG"/>-->
 
     <root level="info">
         <appender-ref ref="file"/>
