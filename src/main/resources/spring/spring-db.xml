@@ -52,6 +52,8 @@
             </map>
         </property>
 
+<!--        <property name="hibernate.enable_lazy_load_no_trans">true</property>        -->
+
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
                   p:showSql="${jpa.showSql}">
