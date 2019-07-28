@@ -36,9 +36,9 @@ public class JspMealController extends AbstractMealController {
             Integer.parseInt(request.getParameter("calories")));
 
         if (StringUtils.isEmpty(request.getParameter("id"))) {
-            this.create(meal);
+            super.create(meal);
         } else {
-            this.update(meal, getId(request));
+            super.update(meal, getId(request));
         }
 
         return "redirect:/meals";
@@ -46,15 +46,13 @@ public class JspMealController extends AbstractMealController {
 
     @RequestMapping(value ="/delete", method = RequestMethod.GET)
     public String delete(HttpServletRequest request)  {
-        int id = getId(request);
-        this.delete(id);
-
+        super.delete(getId(request));
         return "redirect:/meals";
     }
 
     @RequestMapping(value ="/update", method = RequestMethod.GET)
     public String update(HttpServletRequest request, Model model) {
-        final Meal meal = this.get(getId(request));
+        final Meal meal = super.get(getId(request));
         model.addAttribute("meal", meal);
         model.addAttribute("action", "update");
         return "mealForm";
@@ -78,9 +76,9 @@ public class JspMealController extends AbstractMealController {
             LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
             LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
 
-            model.addAttribute("meals", this.getBetween(startDate, startTime, endDate, endTime));
+            model.addAttribute("meals", super.getBetween(startDate, startTime, endDate, endTime));
         } else {
-            model.addAttribute("meals", this.getAll());
+            model.addAttribute("meals", super.getAll());
         }
         return "meals";
     }
