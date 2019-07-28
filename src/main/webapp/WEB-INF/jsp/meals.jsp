@@ -34,7 +34,7 @@
         <button type="submit"><spring:message code="common.filter"/></button>
     </form>
     <hr/>
-    <a href="meals?action=create"><spring:message code="meal.add"/></a>
+    <a href="meals/create"><spring:message code="meal.add"/></a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -57,8 +57,8 @@
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-                <td><a href="meals?action=update&id=${meal.id}"><spring:message code="common.update"/></a></td>
-                <td><a href="meals?action=delete&id=${meal.id}"><spring:message code="common.delete"/></a></td>
+                <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
+                <td><a href="meals/delete?id=${meal.id}"><spring:message code="common.delete"/></a></td>
             </tr>
         </c:forEach>
     </table>
