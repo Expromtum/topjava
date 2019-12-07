@@ -20,7 +20,7 @@ tr[data-mealExcess="false"] {
 }
 
 tr[data-mealExcess="true"] {
-    color: blue;
+    color: red;
 }
 
 header, footer {

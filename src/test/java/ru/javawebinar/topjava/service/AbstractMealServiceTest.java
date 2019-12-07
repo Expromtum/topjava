@@ -25,7 +25,8 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Test
     void delete() throws Exception {
         service.delete(MEAL1_ID, USER_ID);
-        assertMatch(service.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
+        assertThrows(NotFoundException.class, () ->
+                service.get(MEAL1_ID, USER_ID));
     }
 
     @Test
@@ -42,11 +43,12 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     void create() throws Exception {
-        Meal newMeal = getCreated();
+        Meal newMeal = getNew();
         Meal created = service.create(newMeal, USER_ID);
-        newMeal.setId(created.getId());
-        assertMatch(newMeal, created);
-        assertMatch(service.getAll(USER_ID), newMeal, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+        Integer newId = created.getId();
+        newMeal.setId(newId);
+        assertMatch(created, newMeal);
+        assertMatch(service.get(newId, USER_ID), newMeal);
     }
 
     @Test
@@ -93,7 +95,12 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void testValidation() throws Exception {
+    public void getBetweenWithNullDates() throws Exception {
+        assertMatch(service.getBetweenDates(null, null, USER_ID), MEALS);
+    }
+
+    @Test
+    public void createWithException() throws Exception {
         Assumptions.assumeTrue(isJpaBased(), "Validation not supported (JPA only)");
         validateRootCause(() -> service.create(new Meal(null, of(2015, Month.JUNE, 1, 18, 0), "  ", 300), USER_ID), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new Meal(null, null, "Description", 300), USER_ID), ConstraintViolationException.class);

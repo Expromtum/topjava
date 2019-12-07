@@ -9,8 +9,6 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,11 +29,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void create() throws Exception {
-        User newUser = new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
+        User newUser = getNew();
         User created = service.create(new User(newUser));
-        newUser.setId(created.getId());
+        Integer newId = created.getId();
+        newUser.setId(newId);
         assertMatch(created, newUser);
-        assertMatch(service.getAll(), ADMIN, newUser, USER);
+        assertMatch(service.get(newId), newUser);
     }
 
     @Test
@@ -47,7 +46,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     void delete() throws Exception {
         service.delete(USER_ID);
-        assertMatch(service.getAll(), ADMIN);
+        assertThrows(NotFoundException.class, () ->
+                service.delete(USER_ID));
     }
 
     @Test
@@ -76,10 +76,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     void update() throws Exception {
-        User updated = new User(USER);
-        updated.setName("UpdatedName");
-        updated.setCaloriesPerDay(330);
-        updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
+        User updated = getUpdated();
         service.update(new User(updated));
         assertMatch(service.get(USER_ID), updated);
     }
