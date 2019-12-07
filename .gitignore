@@ -4,4 +4,4 @@ target
 *.iml
 *.patch
 log
-*.patch
+*.log
