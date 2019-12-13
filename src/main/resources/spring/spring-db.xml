@@ -45,13 +45,20 @@
         </bean>
 
         <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
-
-        <bean id="dataSource"
-              class="org.apache.tomcat.jdbc.pool.DataSource"
+            <bean id="dataSource"
+                  class="org.apache.tomcat.jdbc.pool.DataSource"
+                  p:driverClassName="com.p6spy.engine.spy.P6SpyDriver"
+                  p:url="${database.url}"
+                  p:username="${database.username}"
+                  p:password="${database.password}"/>
+<!--
+       <bean id="dataSource"
+             class="org.apache.tomcat.jdbc.pool.DataSource"
               p:driverClassName="org.postgresql.Driver"
               p:url="${database.url}"
               p:username="${database.username}"
-              p:password="${database.password}"/>
+             p:password="${database.password}"/>
+-->
     </beans>
 
     <beans profile="tomcat">
@@ -92,13 +99,21 @@
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).CACHE_REGION_FACTORY}" value="org.hibernate.cache.jcache.internal.JCacheRegionFactory"/>
                     <entry key="#{T(org.hibernate.cache.jcache.ConfigSettings).PROVIDER}" value="org.ehcache.jsr107.EhcacheCachingProvider"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SECOND_LEVEL_CACHE}" value="true"/>
-                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}" value="false"/> <!--default-->
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_QUERY_CACHE}" value="${hibernate.use_query_cache}"/> <!--default-->
 <!--
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_ACTION}" value="drop-and-create"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_CREATE_TARGET}" value="${TOPJAVA_ROOT}/config/ddl/create.ddl"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_SCRIPTS_DROP_TARGET}" value="${TOPJAVA_ROOT}/config/ddl/drop.ddl"/>
                     <entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="create"/>
 -->
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).ORDER_INSERTS}" value="${hibernate.order_inserts}"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).ORDER_UPDATES}" value="${hibernate.order_updates}"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).BATCH_VERSIONED_DATA}" value="${hibernate.jdbc.batch_versioned_data}"/>
+                    <entry key="#{T(org.hibernate.cfg.AvailableSettings).GENERATE_STATISTICS}" value="${hibernate.generate_statistics}"/>
+                    <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}" />
+                    <entry key="hibernate.id.new_generator_mappings" value="${hibernate.id.new_generator_mappings}" />
+                    <entry key="spring.jpa.properties.hibernate.jdbc.batch_size" value="10" />
+                    <entry key="hibernate.session_factory.statement_inspector" value="ru.javawebinar.topjava.util.sqltracker.StatementInspectorImpl"/>
                 </map>
             </property>
 

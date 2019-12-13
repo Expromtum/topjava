@@ -24,6 +24,24 @@
     <!--<logger name="org.springframework.web.servlet" level="debug"/>-->
     <logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="debug"/>
 
+
+    <category name="org.hibernate.type">
+        <priority value="TRACE"/>
+    </category>
+
+<!--    <logger name="org.hibernate.SQL" > <level value="debug"/> </logger>-->
+<!--    <logger name="org.hibernate.stat" > <level value="debug"/> </logger>-->
+<!--    <logger name="org.hibernate.type" > <level value="trace"/> </logger>-->
+<!--    <logger name="org.hibernate.SQL" additivity="false" >-->
+<!--        <level value="DEBUG" />-->
+<!--        <appender-ref ref="SQLROLLINGFILE" />-->
+<!--    </logger>-->
+
+<!--    <logger name="org.hibernate.type" additivity="false" >-->
+<!--        <level value="TRACE" />-->
+<!--        <appender-ref ref="SQLROLLINGFILE" />-->
+<!--    </logger>-->
+
     <root level="info">
         <appender-ref ref="file"/>
         <appender-ref ref="console"/>

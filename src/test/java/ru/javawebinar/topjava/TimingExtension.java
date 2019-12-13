@@ -4,6 +4,8 @@ import org.junit.jupiter.api.extension.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
+import static ru.javawebinar.topjava.util.sqltracker.QueryCountInfoHolder.getQueryInfo;
+import ru.javawebinar.topjava.util.sqltracker.AssertSqlCount;
 
 public class TimingExtension implements
         BeforeTestExecutionCallback, AfterTestExecutionCallback, BeforeAllCallback, AfterAllCallback {
@@ -21,12 +23,17 @@ public class TimingExtension implements
     public void beforeTestExecution(ExtensionContext extensionContext) throws Exception {
         String testName = extensionContext.getDisplayName();
         log.info("\nStart " + testName);
+
+        AssertSqlCount.reset();
+
         stopWatch.start(testName);
     }
 
     @Override
     public void afterTestExecution(ExtensionContext extensionContext) throws Exception {
         stopWatch.stop();
+
+        System.out.printf("\nSql count: " + getQueryInfo().countAll());
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.AbstractMealServiceTest;
+import ru.javawebinar.topjava.util.sqltracker.AssertSqlCount;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,6 +20,7 @@ class DataJpaMealServiceTest extends AbstractMealServiceTest {
         Meal adminMeal = service.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
         assertMatch(adminMeal, ADMIN_MEAL1);
         UserTestData.assertMatch(adminMeal.getUser(), UserTestData.ADMIN);
+        AssertSqlCount.assertSelectCount(2);
     }
 
     @Test
