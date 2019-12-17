@@ -65,7 +65,11 @@ function successNoty(text) {
         text: "<span class='fa fa-lg fa-check'></span> &nbsp;" + text,
         type: 'success',
         layout: "bottomRight",
-        timeout: 1000
+        timeout: 1000,
+        animation: {
+            open : 'animated fadeInRight',
+            close: 'animated fadeOutRight'
+        }
     }).show();
 }
 
@@ -74,6 +78,10 @@ function failNoty(jqXHR) {
     failedNote = new Noty({
         text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;Error status: " + jqXHR.status,
         type: "error",
-        layout: "bottomRight"
+        layout: "bottomRight",
+        animation: {
+            open : 'animated fadeInRight',
+            close: 'animated fadeOutRight'
+        }
     }).show();
 }

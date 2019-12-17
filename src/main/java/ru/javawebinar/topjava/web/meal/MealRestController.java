@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
     static final String REST_URL = "/rest/profile/meals";
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     @GetMapping("/{id}")
@@ -63,6 +66,8 @@ public class MealRestController extends AbstractMealController {
             @RequestParam @Nullable LocalTime startTime,
             @RequestParam @Nullable LocalDate endDate,
             @RequestParam @Nullable LocalTime endTime) {
+        log.info("rest filter");
+
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 }
