@@ -32,11 +32,12 @@ class RootControllerTest extends AbstractControllerTest {
 
     @Test
     void testMeals() throws Exception {
-        mockMvc.perform(get("/meals"))
+        mockMvc.perform(get("/meals")
+                .with(userAuth(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("meals"))
-                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
-                .andExpect(model().attribute("meals", getTos(MEALS, SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"));
+//                .andExpect(model().attribute("meals", getTos(MEALS, SecurityUtil.authUserCaloriesPerDay())));
     }
 }
