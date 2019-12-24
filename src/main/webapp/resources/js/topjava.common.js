@@ -14,6 +14,12 @@ function makeEditable(ctx) {
 function add() {
     $("#modalTitle").html(i18n["addTitle"]);
     form.find(":input").val("");
+
+    // Init DefaultValue if exists
+    form.find(":input").filter("[defaultValue!=''][defaultValue]").each(function(i,elem) {
+        $(elem).val($(elem).attr("defaultValue"));
+    });
+
     $("#editRow").modal();
 }
 
