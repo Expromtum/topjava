@@ -13,6 +13,7 @@ function makeEditable(ctx) {
 
 function add() {
     $("#modalTitle").html(i18n["addTitle"]);
+
     form.find(":input").val("");
 
     // Init DefaultValue if exists
@@ -20,15 +21,21 @@ function add() {
         $(elem).val($(elem).attr("defaultValue"));
     });
 
+    initDateTimePicker();
+
     $("#editRow").modal();
 }
 
 function updateRow(id) {
     $("#modalTitle").html(i18n["editTitle"]);
+
     $.get(context.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
+
+        initDateTimePicker();
+
         $('#editRow').modal();
     });
 }
@@ -45,15 +52,53 @@ function deleteRow(id) {
     }
 }
 
+function initDateTimePicker() {
+    form.find(":input")
+        .filter("[type='data-datetime']")
+        .each(function(i,elem) {
+            $(elem).datetimepicker({
+                format: 'yy-m-d h:m'
+            });
+
+            if ($(elem).val()) {
+                let dt = $(elem).val().slice(0, 16).replace('T', ' ');
+                $(elem).val(dt);
+            } else {
+                $(elem).val("");
+            }
+    });
+}
+
 function updateTableByData(data) {
     context.datatableApi.clear().rows.add(data).draw();
+}
+
+function getSerializedFormData() {
+    var formData = form.serializeArray();
+    var serializedData = {};
+
+    $.each(formData,
+        function(i, pair) {
+            if ( pair.name === "dateTime" ) {
+                //@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+                let dt = moment(pair.value, "YYYY-MM-DD HH.mm");
+                if (dt.isValid()) {
+                    serializedData[pair.name] = dt.toISOString().substring(0, 19)
+                } else {
+                    serializedData[pair.name] = pair.value;
+                }
+            } else {
+                serializedData[pair.name] = pair.value;
+            }
+        });
+    return serializedData;
 }
 
 function save() {
     $.ajax({
         type: "POST",
         url: context.ajaxUrl,
-        data: form.serialize()
+        data: getSerializedFormData()
     }).done(function () {
         $("#editRow").modal("hide");
         context.updateTable();

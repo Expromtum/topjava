@@ -21,6 +21,12 @@ import java.util.StringJoiner;
 public class MealUIController extends AbstractMealController {
 
     @Override
+    @GetMapping(value ="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Meal get(@PathVariable int id) {
+        return super.get(id);
+    }
+
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MealTo> getAll() {
         return super.getAll();
