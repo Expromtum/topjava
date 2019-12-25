@@ -14,10 +14,12 @@ function makeEditable(ctx) {
 function add() {
     $("#modalTitle").html(i18n["addTitle"]);
 
-    form.find(":input").val("");
+    var list = form.find(":input");
+
+    list.val("");
 
     // Init DefaultValue if exists
-    form.find(":input").filter("[defaultValue!=''][defaultValue]").each(function(i,elem) {
+    list.filter("[defaultValue!=''][defaultValue]").each(function(i,elem) {
         $(elem).val($(elem).attr("defaultValue"));
     });
 
@@ -57,7 +59,8 @@ function initDateTimePicker() {
         .filter("[type='data-datetime']")
         .each(function(i,elem) {
             $(elem).datetimepicker({
-                format: 'yy-m-d h:m'
+                format: 'Y-m-d H:m',
+                defaultDate: new Date()
             });
 
             if ($(elem).val()) {
