@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,23 +28,27 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE = "Meal.delete";
     public static final String GET_BETWEEN = "Meal.getBetween";
 
+    public interface ValidationWithoutUser {
+        // validation group marker interface
+    }
+
     @Column(name = "date_time", nullable = false)
-    @NotNull
+    @NotNull(groups = {Default.class, Meal.ValidationWithoutUser.class})
     private LocalDateTime dateTime;
 
     @Column(name = "description", nullable = false)
-    @NotBlank
-    @Size(min = 2, max = 120)
+    @NotBlank(groups = {Default.class, Meal.ValidationWithoutUser.class})
+    @Size(min = 2, max = 120, groups = {Default.class, Meal.ValidationWithoutUser.class})
     private String description;
 
     @Column(name = "calories", nullable = false)
-    @Range(min = 10, max = 5000)
+    @Range(min = 10, max = 5000, groups = {Default.class, Meal.ValidationWithoutUser.class})
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
+    @NotNull(groups = {Default.class})
     private User user;
 
     public Meal() {
