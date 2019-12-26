@@ -32,7 +32,13 @@ $(function () {
         datatableOpts: {
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTimeUI",
+                    "render": function (date, type, row) {
+                        if (type === 'display') {
+                            return formatDate(date);
+                        }
+                        return date;
+                    }
                 },
                 {
                     "data": "description"
