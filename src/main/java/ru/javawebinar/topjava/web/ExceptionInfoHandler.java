@@ -13,12 +13,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.ErrorInfo;
-import ru.javawebinar.topjava.util.exception.ErrorType;
-import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.util.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Arrays;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -59,8 +58,8 @@ public class ExceptionInfoHandler {
     }
 
     private static ErrorInfo logAndGetValidationErrorInfo(HttpServletRequest req, BindingResult result, ErrorType errorType) {
-        String message = ValidationUtil.getErrorResponseMessage(result);
-        log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), message);
+        String[] message = ValidationUtil.getErrorResponse(result);
+        log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), Arrays.toString(message));
         return new ErrorInfo(req.getRequestURL(), errorType, message);
     }
 

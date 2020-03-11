@@ -77,15 +77,10 @@ public class ValidationUtil {
         }
     }
 
-    public static ResponseEntity<String> getErrorResponse(BindingResult result) {
-        return ResponseEntity.unprocessableEntity().body(getErrorResponseMessage(result));
-    }
-
-    public static String getErrorResponseMessage(BindingResult result) {
+    public static String[] getErrorResponse(BindingResult result) {
         return result.getFieldErrors().stream()
                 .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                .collect(Collectors.joining("<br>")
-                );
+                .toArray(String[]::new);
     }
 
 }
