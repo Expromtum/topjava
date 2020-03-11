@@ -19,10 +19,22 @@ public class UserTestData {
         return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.ROLE_USER));
     }
 
+    public static User getNewNotValid() {
+        return new User(null, "New", null, "newPass", 155500000, false, new Date(), Collections.singleton(Role.ROLE_USER));
+    }
+
     public static User getUpdated() {
         User updated = new User(USER);
         updated.setName("UpdatedName");
         updated.setCaloriesPerDay(330);
+        updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
+        return updated;
+    }
+
+    public static User getUpdatedNotValid() {
+        User updated = new User(USER);
+        updated.setName(null);
+        updated.setCaloriesPerDay(-1000);
         updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         return updated;
     }
