@@ -1,5 +1,9 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/ajax/admin/users")
 public class AdminUIController extends AbstractUserController {
+
+    @Autowired
+    MessageSource messageSource;
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,10 +44,14 @@ public class AdminUIController extends AbstractUserController {
 
     @PostMapping
     public void createOrUpdate(@Valid UserTo userTo) {
-        if (userTo.isNew()) {
-            super.create(userTo);
-        } else {
-            super.update(userTo, userTo.id());
+        try {
+            if (userTo.isNew()) {
+                super.create(userTo);
+            } else {
+                super.update(userTo, userTo.id());
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException(messageSource.getMessage("exception.dublicate_email", null, LocaleContextHolder.getLocale()) + " " + userTo.getEmail());
         }
     }
 
