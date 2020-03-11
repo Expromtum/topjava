@@ -20,6 +20,8 @@ import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import javax.annotation.PostConstruct;
 
+import java.nio.charset.Charset;
+
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static ru.javawebinar.topjava.web.AbstractControllerTest.RequestWrapper.wrap;
 
@@ -35,6 +37,11 @@ import static ru.javawebinar.topjava.web.AbstractControllerTest.RequestWrapper.w
 abstract public class AbstractControllerTest {
 
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
+
+    public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(
+            MediaType.APPLICATION_JSON.getType(),
+            MediaType.APPLICATION_JSON.getSubtype(),
+            Charset.forName("utf8"));
 
     static {
         CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
