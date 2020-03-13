@@ -76,11 +76,4 @@ public class ValidationUtil {
             throw new ConstraintViolationException(violations);
         }
     }
-
-    public static String[] getErrorResponse(BindingResult result) {
-        return result.getFieldErrors().stream()
-                .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                .toArray(String[]::new);
-    }
-
 }

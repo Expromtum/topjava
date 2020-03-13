@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -48,6 +49,16 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         newMeal.setId(newId);
         MEAL_MATCHERS.assertMatch(created, newMeal);
         MEAL_MATCHERS.assertMatch(service.get(newId, USER_ID), newMeal);
+    }
+
+    @Test
+    void createDublicateDateTime() throws Exception {
+        assertThrows(DataIntegrityViolationException.class, () ->  {
+                Meal newMeal = getNew();
+                service.create(newMeal, USER_ID);
+                Meal newMealDublicate = getNew();
+                service.create(newMealDublicate, USER_ID);
+            });
     }
 
     @Test

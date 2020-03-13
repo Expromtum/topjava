@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +26,9 @@ import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ExceptionInfoHandler {
     private static Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
+
+    @Autowired
+    private MessageUtil exceptionTranslate;
 
     //  http://stackoverflow.com/a/22358422/548473
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
@@ -57,20 +61,23 @@ public class ExceptionInfoHandler {
         return logAndGetValidationErrorInfo(req, result, VALIDATION_ERROR);
     }
 
-    private static ErrorInfo logAndGetValidationErrorInfo(HttpServletRequest req, BindingResult result, ErrorType errorType) {
-        String[] message = ValidationUtil.getErrorResponse(result);
+    private ErrorInfo logAndGetValidationErrorInfo(HttpServletRequest req, BindingResult result, ErrorType errorType) {
+        String[] message = result.getFieldErrors().stream()
+                .map(fe -> String.format("[%s] %s", fe.getField(), exceptionTranslate.translateMessage(fe.getDefaultMessage())))
+                .toArray(String[]::new);
+
         log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), Arrays.toString(message));
         return new ErrorInfo(req.getRequestURL(), errorType, message);
     }
 
     //    https://stackoverflow.com/questions/538870/should-private-helper-methods-be-static-if-they-can-be-static
-    private static ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
+    private ErrorInfo logAndGetErrorInfo(HttpServletRequest req, Exception e, boolean logException, ErrorType errorType) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         if (logException) {
             log.error(errorType + " at request " + req.getRequestURL(), rootCause);
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+        return new ErrorInfo(req.getRequestURL(), errorType, exceptionTranslate.translateMessage(rootCause.toString()));
     }
 }

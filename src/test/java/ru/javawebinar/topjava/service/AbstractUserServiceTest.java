@@ -1,8 +1,11 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.transaction.TestTransaction;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -35,6 +38,19 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         assertThrows(DataAccessException.class, () ->
                 service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass",  2000, Role.ROLE_USER)));
     }
+
+    @Test
+    void duplicateMailCreate2() throws Exception {
+        Executable test = () -> {
+            service.create(new User(null, "Duplicate", "user2@yandex.ru", "newPass", 2000, Role.ROLE_USER));
+            service.create(new User(null, "Duplicate", "user2@yandex.ru", "newPass", 2000, Role.ROLE_USER));
+
+          //  TestTransaction.flagForCommit();
+         //   TestTransaction.end();
+        };
+        assertThrows(DataIntegrityViolationException.class, test);
+    }
+
 
     @Test
     void delete() throws Exception {

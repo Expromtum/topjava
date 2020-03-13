@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
@@ -17,7 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.util.exception.ErrorType.DATA_ERROR;
+import static ru.javawebinar.topjava.web.MessageUtil.EXCEPTION_DUPLICATE_DATETIME;
+import static ru.javawebinar.topjava.web.MessageUtil.EXCEPTION_DUPLICATE_EMAIL;
 
+//https://jsonpath.com/ - JSONPath expressions
 class AdminRestControllerTest extends AbstractControllerTest {
 
     @Autowired
@@ -82,7 +88,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     @Test
     void update() throws Exception {
         User updated = UserTestData.getUpdated();
-        perform(doPut(USER_ID).jsonBody(updated).basicAuth(ADMIN))
+        perform(doPut(USER_ID).jsonUserWithPassword(updated).basicAuth(ADMIN))
                 .andExpect(status().isNoContent());
 
         USER_MATCHERS.assertMatch(userService.get(USER_ID), updated);
@@ -115,10 +121,28 @@ class AdminRestControllerTest extends AbstractControllerTest {
     void createWithLocationNotValid() throws Exception {
         User newUser = UserTestData.getNewNotValid();
         perform(doPost().jsonUserWithPassword(newUser).basicAuth(ADMIN))
+                .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.type").value(ErrorType.VALIDATION_ERROR.name()))
-                .andDo(print());
+                ;
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void createWithLocationDublicate() throws Exception {
+        User newUser = UserTestData.getNew();
+        perform(doPost().jsonUserWithPassword(newUser).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        User newUserDublicate = UserTestData.getNew();
+        perform(doPost().jsonUserWithPassword(newUserDublicate).basicAuth(ADMIN))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_UTF8))
+                .andExpect(errorType(DATA_ERROR))
+                .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL));
     }
 
     @Test

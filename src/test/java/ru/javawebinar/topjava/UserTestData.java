@@ -26,6 +26,7 @@ public class UserTestData {
     public static User getUpdated() {
         User updated = new User(USER);
         updated.setName("UpdatedName");
+        updated.setEmail("updated@mail.ru");
         updated.setCaloriesPerDay(330);
         updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         return updated;
@@ -34,6 +35,7 @@ public class UserTestData {
     public static User getUpdatedNotValid() {
         User updated = new User(USER);
         updated.setName(null);
+        updated.setEmail("tralala@mail.ru");
         updated.setCaloriesPerDay(-1000);
         updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         return updated;

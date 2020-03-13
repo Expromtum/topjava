@@ -44,14 +44,10 @@ public class AdminUIController extends AbstractUserController {
 
     @PostMapping
     public void createOrUpdate(@Valid UserTo userTo) {
-        try {
-            if (userTo.isNew()) {
-                super.create(userTo);
-            } else {
-                super.update(userTo, userTo.id());
-            }
-        } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityViolationException(messageSource.getMessage("exception.dublicate_email", null, LocaleContextHolder.getLocale()) + " " + userTo.getEmail());
+        if (userTo.isNew()) {
+            super.create(userTo);
+        } else {
+            super.update(userTo, userTo.id());
         }
     }
 

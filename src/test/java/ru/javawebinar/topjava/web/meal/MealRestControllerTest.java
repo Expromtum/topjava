@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
@@ -99,6 +101,28 @@ class MealRestControllerTest extends AbstractControllerTest {
         newMeal.setId(newId);
         MEAL_MATCHERS.assertMatch(created, newMeal);
         MEAL_MATCHERS.assertMatch(mealService.get(newId, USER_ID), newMeal);
+    }
+
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void createDublicate() throws Exception {
+        Meal newMeal = MealTestData.getNew();
+        perform(doPost()
+                .jsonBody(newMeal)
+                .basicAuth(USER))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        Meal newMealDublicate = MealTestData.getNew();
+        newMealDublicate.setDescription("dublicate");
+        perform(doPost()
+                .jsonBody(newMealDublicate)
+                .basicAuth(USER))
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(content().contentTypeCompatibleWith(APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.type").value(ErrorType.DATA_ERROR.name())) ;
     }
 
     @Test
