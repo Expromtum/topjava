@@ -27,4 +27,24 @@
             </form:form>
         </sec:authorize>
     </div>
+    <li class="dropdown">
+        <a href="#" class="btn btn-secondary dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            ${pageContext.response.locale=='ru' ? 'Русский' : 'English'}
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dLabel">
+<%--            <li><a class="dropdown-item" onclick="show('ru')">Русский</a></li>--%>
+<%--            <li><a class="dropdown-item" onclick="show('en')">English</a></li>--%>
+            <li><a class="dropdown-item" href="${requestScope['javax.servlet.forward.request_uri']}?lang=ru">Русский</a></li>
+            <li><a class="dropdown-item" href="${requestScope['javax.servlet.forward.request_uri']}?lang=en">English</a></li>
+        </ul>
+    </li>
 </nav>
+<%--Current Locale : ${pageContext.response.locale}--%>
+<%--<script type="text/javascript">--%>
+<%--    function show(lang) {--%>
+<%--        window.location.href = window.location.href.split('?')[0] + '?lang=' + lang;--%>
+<%--    }--%>
+<%--</script>--%>
+<script type="text/javascript">
+    var localeCode = "${pageContext.response.locale}";
+</script>
