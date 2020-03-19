@@ -1,4 +1,4 @@
-Codacy[![Build Status](https://travis-ci.org/Expromtum/topjava.svg?branch=master)](https://travis-ci.org/Expromtum/topjava)
+Codacy  [![Build Status](https://travis-ci.org/Expromtum/topjava.svg?branch=master)](https://travis-ci.org/Expromtum/topjava)
 
 Java Enterprise Online Project
 ===============================
